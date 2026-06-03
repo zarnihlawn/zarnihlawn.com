@@ -1,0 +1,14 @@
+@font-face {
+	font-family: 'playfair-display';
+	src: url('../font/PlayfairDisplay.ttf') format('truetype');
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--font-playfair-display: 'playfair-display', sans-serif;
+}
+
+.playfair-font {
+	font-family: var(--font-playfair-display);
+}
