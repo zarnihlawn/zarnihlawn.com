@@ -48,6 +48,18 @@ export const developmentProjects: DevelopmentProject[] = [
 				body: 'Documentation for Shaheru will be added here — features, architecture, and what you built.'
 			}
 		]
+	},
+	{
+		id: 4,
+		slug: 'lumona',
+		name: 'Lumona',
+		summary: 'Documentation and details for Lumona will be added here.',
+		documentation: [
+			{
+				heading: 'Overview',
+				body: 'Documentation for Lumona will be added here — features, architecture, and what you built.'
+			}
+		]
 	}
 ];
 

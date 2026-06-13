@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import HeroImage from '$lib/component/HeroImage.svelte';
-	import { LucideArrowRight } from '@lucide/svelte';
+	import { LucideArrowLeft } from '@lucide/svelte';
 
 	let {
 		title,
@@ -30,8 +30,8 @@
 			href={backHref}
 			class="link-tag link-tag-back flex shrink-0 items-center gap-2 rounded-2xl border px-3 py-1 text-sm italic opacity-70"
 		>
+			<LucideArrowLeft class="size-4 shrink-0" />
 			{backLabel}
-			<LucideArrowRight class="size-4 shrink-0" />
 		</a>
 	</div>
 
