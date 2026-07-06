@@ -1,30 +1,29 @@
-# syntax = docker/dockerfile:1
-
-ARG NODE_VERSION=22
-
-FROM node:${NODE_VERSION}-slim AS builder
+# ---------- Build stage ----------
+FROM node:24-alpine AS builder
 
 WORKDIR /app
+RUN corepack enable
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
-FROM node:${NODE_VERSION}-slim AS production
+
+# ---------- Runtime stage ----------
+FROM node:24-alpine
 
 WORKDIR /app
+RUN corepack enable
 
 ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3000
-
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+ENV PORT=5173
 
 COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
 
-EXPOSE 3000
+EXPOSE 5173
 
-CMD ["npm", "start"]
+CMD ["node", "build"]

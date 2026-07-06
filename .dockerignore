@@ -1,22 +1,6 @@
 node_modules
 .svelte-kit
 build
-
 .git
 .gitignore
-.env
-.env.*
-!.env.example
-
-**/.DS_Store
-**/Thumbs.db
-
-**/test-results
-**/vite.config.js.timestamp-*
-**/vite.config.ts.timestamp-*
-
-# Paraglide (generated at build time)
-src/lib/paraglide
-project.inlang/cache
-project.inlang/**/*
-!project.inlang/settings.json
+Dockerfile
