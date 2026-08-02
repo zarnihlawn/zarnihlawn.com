@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { AcademicRecord } from '$lib/data/academic';
-	import { academicStatusLabel } from '$lib/data/academic';
+	import { academicDetailPath, academicStatusLabel } from '$lib/data/academic';
+	import { LucideArrowUpRight } from '@lucide/svelte';
 
 	let { record }: { record: AcademicRecord } = $props();
 
 	const rowClass =
 		'link-tag flex w-full flex-col gap-2 rounded-2xl border px-4 py-3';
+
+	const detailsHref = $derived(record.slug ? academicDetailPath(record.slug) : null);
 </script>
 
 <div class={rowClass}>
@@ -15,15 +18,26 @@
 			<div class="truncate text-sm italic opacity-70">{record.institution}</div>
 		</div>
 
-		<span class="shrink-0 text-sm italic opacity-70 whitespace-nowrap">{record.period}</span>
+		<span class="shrink-0 whitespace-nowrap text-sm italic opacity-70">{record.period}</span>
 	</div>
 
-	<div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-		{#if record.location}
-			<span class="italic opacity-70">{record.location}</span>
-		{/if}
-		<span class="rounded-full border px-2 py-0.5 text-xs italic opacity-80">
+	<div class="flex flex-wrap items-center gap-2">
+		<span class="rounded-2xl border px-3 py-1 text-sm italic opacity-80">
 			{academicStatusLabel[record.status]}
 		</span>
+
+		{#if detailsHref}
+			<a
+				href={detailsHref}
+				class="link-tag flex w-fit cursor-pointer items-center gap-2 rounded-2xl border px-3 py-1 text-sm text-[#5b6ee1]"
+			>
+				See details
+				<LucideArrowUpRight class="link-tag-arrow size-3 shrink-0" />
+			</a>
+		{/if}
+
+		{#if record.location}
+			<span class="text-sm italic opacity-70">{record.location}</span>
+		{/if}
 	</div>
 </div>

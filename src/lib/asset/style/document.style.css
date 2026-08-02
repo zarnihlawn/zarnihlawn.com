@@ -1,0 +1,200 @@
+/* Shared portfolio document layout (Academic + Development detail pages) */
+
+.portfolio-doc {
+	color: rgb(0 0 0 / 0.82);
+}
+
+.portfolio-doc .doc-block {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.portfolio-doc .doc-kicker {
+	margin: 0;
+	font-size: 0.7rem;
+	font-weight: 500;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	opacity: 0.45;
+}
+
+.portfolio-doc .doc-lede,
+.portfolio-doc .doc-body,
+.portfolio-doc .doc-summary {
+	margin: 0;
+	font-size: 0.9375rem;
+	line-height: 1.75;
+	opacity: 0.85;
+}
+
+.portfolio-doc .doc-summary {
+	font-style: italic;
+	opacity: 0.7;
+}
+
+.portfolio-doc .doc-rule {
+	margin: 2.75rem 0;
+	border: 0;
+	border-top: 1px solid rgb(0 0 0 / 0.12);
+}
+
+.portfolio-doc .doc-focus {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.portfolio-doc .doc-focus-item {
+	display: grid;
+	grid-template-columns: 2rem 1fr;
+	gap: 0.85rem;
+	align-items: baseline;
+}
+
+.portfolio-doc .doc-index {
+	font-size: 0.75rem;
+	letter-spacing: 0.06em;
+	opacity: 0.4;
+	font-variant-numeric: tabular-nums;
+}
+
+.portfolio-doc .doc-focus-text {
+	font-size: 0.9375rem;
+	line-height: 1.55;
+	opacity: 0.85;
+}
+
+.portfolio-doc .doc-project {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.portfolio-doc .doc-project-head {
+	display: grid;
+	grid-template-columns: 2.75rem 1fr;
+	gap: 0.75rem 1rem;
+	align-items: start;
+}
+
+.portfolio-doc .doc-project-no {
+	padding-top: 0.35rem;
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	opacity: 0.35;
+	font-variant-numeric: tabular-nums;
+}
+
+.portfolio-doc .doc-project-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+
+.portfolio-doc .doc-project-title {
+	display: inline;
+	width: fit-content;
+	font-size: 1.5rem;
+	line-height: 1.25;
+	font-style: italic;
+	color: #5b6ee1;
+	text-decoration: none;
+	cursor: pointer;
+	transition: opacity 0.25s ease;
+}
+
+.portfolio-doc .doc-project-title:hover {
+	opacity: 0.75;
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+}
+
+.portfolio-doc p.doc-project-title {
+	margin: 0;
+	cursor: default;
+}
+
+.portfolio-doc p.doc-project-title:hover {
+	opacity: 1;
+	text-decoration: none;
+}
+
+.portfolio-doc .doc-role {
+	margin: 0;
+	font-size: 0.7rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	opacity: 0.45;
+}
+
+.portfolio-doc .doc-sub,
+.portfolio-doc .doc-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+}
+
+.portfolio-doc .doc-sub {
+	padding-left: 3.75rem;
+}
+
+@media (max-width: 640px) {
+	.portfolio-doc .doc-project-head {
+		grid-template-columns: 2rem 1fr;
+	}
+
+	.portfolio-doc .doc-sub {
+		padding-left: 0;
+	}
+}
+
+.portfolio-doc .doc-subhead {
+	margin: 0;
+	font-size: 0.7rem;
+	font-weight: 500;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	opacity: 0.45;
+}
+
+.portfolio-doc .doc-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 0.45rem;
+}
+
+.portfolio-doc .doc-list li {
+	position: relative;
+	padding-left: 0.95rem;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	opacity: 0.8;
+}
+
+.portfolio-doc .doc-list li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.65em;
+	width: 0.28rem;
+	height: 0.28rem;
+	border-radius: 9999px;
+	background: #5b6ee1;
+	opacity: 0.55;
+}
+
+.portfolio-doc .doc-stack {
+	margin: 0;
+	font-size: 0.875rem;
+	line-height: 1.65;
+	letter-spacing: 0.01em;
+	opacity: 0.65;
+}

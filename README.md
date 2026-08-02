@@ -20,7 +20,7 @@ npx sv@0.15.3 create --template minimal --types ts --add prettier eslint vitest=
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `npm install`, start a development server:
 
 ```sh
 npm run dev

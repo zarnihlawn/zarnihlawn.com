@@ -2,20 +2,18 @@
 FROM node:24-alpine AS builder
 
 WORKDIR /app
-RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
 COPY . .
-RUN pnpm run build
+RUN npm run build
 
 
 # ---------- Runtime stage ----------
 FROM node:24-alpine
 
 WORKDIR /app
-RUN corepack enable
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0

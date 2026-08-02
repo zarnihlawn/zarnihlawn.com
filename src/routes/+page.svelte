@@ -57,12 +57,6 @@
 	const resourceLinks = [
 		{
 			id: 1,
-			name: 'CV',
-			link: '/cv.pdf',
-			download: 'Zarni-Hlawn-CV.pdf'
-		},
-		{
-			id: 2,
 			name: 'Resume',
 			link: '/resume.pdf',
 			download: 'Zarni-Hlawn-Resume.pdf'
@@ -70,7 +64,7 @@
 	];
 
 	const about =
-		'Software engineer building web apps, automation, and tools. Based in Yangon — focused on practical, well-crafted work.';
+		'Software engineer building web apps, automation, and tools. Based in Yangon. Experienced in full-stack development.';
 
 	const detailLinks = [
 		{

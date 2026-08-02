@@ -31,9 +31,9 @@
 
 	<a
 		href={detailsHref}
-		class="link-tag mt-1 flex w-fit items-center gap-2 rounded-2xl border px-3 py-1 text-sm text-[#5b6ee1]"
+		class="link-tag mt-1 flex w-fit cursor-pointer items-center gap-2 rounded-2xl border px-3 py-1 text-sm text-[#5b6ee1]"
 	>
-		Read details
+		See details
 		<LucideArrowUpRight class="link-tag-arrow size-3 shrink-0" />
 	</a>
 </div>
