@@ -51,8 +51,8 @@ function formatPeriod(startDate: string, endDate: string | null): string {
 const records: WorkExperienceRecord[] = [
 	{
 		id: 2,
-		slug: 'pun-hlaing-junior-data-software-engineer',
-		role: 'Junior Data & Software Engineer',
+		slug: 'pun-hlaing-data-software-engineer',
+		role: 'Data & Software Engineer',
 		company: 'Pun Hlaing Hospitals',
 		startDate: '2025-10-01',
 		endDate: null,
@@ -62,7 +62,7 @@ const records: WorkExperienceRecord[] = [
 		overview: [
 			{
 				heading: 'Role',
-				body: 'Junior Data & Software Engineer at Pun Hlaing Hospitals (October 2025 – Present). Building and integrating hospital software: controlled-browsing SaaS (Dora), the employee portal with shared Drive and Docs, the Heka clinical/inventory platform, and n8n automation for queue-system alerts on the vendor BIM kiosk.'
+				body: 'Data & Software Engineer at Pun Hlaing Hospitals (October 2025 – Present). Building and integrating hospital software: controlled-browsing SaaS (Dora), the employee portal with shared Drive and Docs, the Heka clinical/inventory platform, and n8n automation for queue-system alerts on the vendor BIM kiosk.'
 			},
 			{
 				heading: 'Focus',
@@ -238,7 +238,11 @@ const records: WorkExperienceRecord[] = [
 					},
 					{
 						heading: 'Stack',
-						items: ['n8n', 'Vendor BIM queue / kiosk integration', 'Hospital Docker / nginx hosting']
+						items: [
+							'n8n',
+							'Vendor BIM queue / kiosk integration',
+							'Hospital Docker / nginx hosting'
+						]
 					}
 				]
 			}

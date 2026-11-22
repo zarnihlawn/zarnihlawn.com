@@ -1,10 +1,9 @@
 <script lang="ts">
-	import '$lib/asset/style/document.style.css';
 	import type { AcademicRecord, AcademicSection } from '$lib/data/academic';
 
 	let { record }: { record: AcademicRecord } = $props();
 
-	function padIndex(n: number): string {
+	function pad(n: number): string {
 		return String(n).padStart(2, '0');
 	}
 
@@ -20,26 +19,23 @@
 	const focus = $derived(record.overview?.find((s) => s.heading === 'Focus areas'));
 </script>
 
-<div class="portfolio-doc mx-auto w-full max-w-3xl">
-	{#if program}
-		<section class="doc-block">
-			<p class="doc-kicker">Program</p>
-			{#if program.body}
-				<p class="doc-lede">{program.body}</p>
-			{/if}
+<div class="study-doc">
+	{#if program?.body}
+		<section class="study-section">
+			<p class="kicker">Program</p>
+			<p class="study-body">{program.body}</p>
 		</section>
 	{/if}
 
 	{#if focus?.items?.length}
-		<hr class="doc-rule" />
-
-		<section class="doc-block">
-			<p class="doc-kicker">Focus</p>
-			<ol class="doc-focus">
+		<div class="draw-rule" aria-hidden="true"></div>
+		<section class="study-section">
+			<p class="kicker">Focus</p>
+			<ol class="study-list">
 				{#each focus.items as item, i (item)}
-					<li class="doc-focus-item">
-						<span class="doc-index" aria-hidden="true">{padIndex(i + 1)}</span>
-						<span class="doc-focus-text">{item}</span>
+					<li class="study-list-item">
+						<span class="idx">{pad(i + 1)}</span>
+						<span>{item}</span>
 					</li>
 				{/each}
 			</ol>
@@ -47,51 +43,41 @@
 	{/if}
 
 	{#if record.projects?.length}
-		<hr class="doc-rule" />
-
-		<section class="doc-block">
-			<p class="doc-kicker">Applications</p>
-			<p class="doc-lede">
+		<div class="draw-rule" aria-hidden="true"></div>
+		<section class="study-section">
+			<p class="kicker">Applications</p>
+			<p class="study-body">
 				{record.applicationsIntro ??
 					'Projects from this program. Titles open the public repository.'}
 			</p>
 		</section>
 
 		{#each record.projects as project, i (project.repoUrl)}
-			<hr class="doc-rule" />
-
-			<article class="doc-project">
-				<div class="doc-project-head">
-					<span class="doc-project-no" aria-hidden="true">{padIndex(i + 1)}</span>
-					<div class="doc-project-meta">
-						<a
-							href={project.repoUrl}
-							target="_blank"
-							rel="noreferrer"
-							class="doc-project-title playfair-font"
-						>
+			<div class="draw-rule" aria-hidden="true"></div>
+			<article class="study-block">
+				<div class="study-block-head">
+					<span class="idx">{pad(i + 1)}</span>
+					<div>
+						<a class="study-link" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
 							{project.name}
 						</a>
 						{#if project.role}
-							<p class="doc-role">{project.role}</p>
+							<p class="meta">{project.role}</p>
 						{/if}
-						<p class="doc-summary">{project.summary}</p>
+						<p class="study-body">{project.summary}</p>
 					</div>
 				</div>
-
 				{#each project.documentation as section (section.heading)}
-					<div class="doc-sub">
-						<p class="doc-subhead">{section.heading}</p>
-
+					<div class="study-sub">
+						<p class="kicker">{section.heading}</p>
 						{#if section.body}
-							<p class="doc-body">{section.body}</p>
+							<p class="study-body">{section.body}</p>
 						{/if}
-
 						{#if section.items?.length}
 							{#if isStackSection(section)}
-								<p class="doc-stack">{stackLine(section)}</p>
+								<p class="stack-line study-stack">{stackLine(section)}</p>
 							{:else}
-								<ul class="doc-list">
+								<ul class="study-bullets">
 									{#each section.items as item (item)}
 										<li>{item}</li>
 									{/each}

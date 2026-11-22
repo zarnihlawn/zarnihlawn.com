@@ -1,5 +1,1 @@
-<script lang="ts">
-	import DetailPage from '$lib/component/DetailPage.svelte';
-</script>
-
-<DetailPage title="Contribution" />
+<p class="page">Contributions are listed on the <a href="/#contribution">portfolio index</a>.</p>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Two frames with a layer offset between them">
+	<rect width="640" height="640" fill="#f4f4f1" />
+	<g fill="none" stroke="#111111" stroke-width="2">
+		<rect x="110" y="170" width="300" height="240" />
+		<rect x="170" y="230" width="300" height="240" />
+		<path d="M110 230h300M170 290h300" stroke-dasharray="7 6" />
+		<path d="M420 170l60 -40M470 410l60 40" />
+		<path d="M110 540h420" />
+	</g>
+</svg>

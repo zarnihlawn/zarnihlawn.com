@@ -1,21 +1,23 @@
 <script lang="ts">
 	import AcademicDocument from '$lib/component/AcademicDocument.svelte';
-	import DetailPage from '$lib/component/DetailPage.svelte';
+	import StudyPage from '$lib/component/StudyPage.svelte';
+	import { readStudy } from '$lib/read-study';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	const record = $derived(data.record);
-	const subtitle = $derived(`${record.institution} · ${record.period}`);
+	const view = $derived(
+		data.record.slug ? readStudy({ kind: 'academic', slug: data.record.slug }) : undefined
+	);
 </script>
 
-<DetailPage
-	title={record.program}
-	description={subtitle}
-	backHref="/academic"
-	backLabel="Back to Academic"
->
-	<div class="mt-4">
-		<AcademicDocument {record} />
-	</div>
-</DetailPage>
+{#if view && view.kind === 'academic'}
+	<StudyPage
+		title={view.title}
+		lede={view.lede}
+		summary={view.summary}
+		path={view.path}
+		indexLabel="Academic"
+	>
+		<AcademicDocument record={view.record} />
+	</StudyPage>
+{/if}

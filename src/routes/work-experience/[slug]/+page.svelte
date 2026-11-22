@@ -1,21 +1,21 @@
 <script lang="ts">
-	import DetailPage from '$lib/component/DetailPage.svelte';
+	import StudyPage from '$lib/component/StudyPage.svelte';
 	import WorkExperienceDocument from '$lib/component/WorkExperienceDocument.svelte';
+	import { readStudy } from '$lib/read-study';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	const experience = $derived(data.experience);
-	const subtitle = $derived(`${experience.company} · ${experience.period}`);
+	const view = $derived(readStudy({ kind: 'work', slug: data.experience.slug }));
 </script>
 
-<DetailPage
-	title={experience.role}
-	description={subtitle}
-	backHref="/work-experience"
-	backLabel="Back to Work Experience"
->
-	<div class="mt-4">
-		<WorkExperienceDocument record={experience} />
-	</div>
-</DetailPage>
+{#if view && view.kind === 'work'}
+	<StudyPage
+		title={view.title}
+		lede={view.lede}
+		summary={view.summary}
+		path={view.path}
+		indexLabel="Work"
+	>
+		<WorkExperienceDocument record={view.record} />
+	</StudyPage>
+{/if}

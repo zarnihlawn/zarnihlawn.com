@@ -35,8 +35,8 @@ export const academicHistory: AcademicRecord[] = [
 		slug: 'msc-computer-science',
 		institution: 'University of Wolverhampton',
 		program: 'MSc Computer Science',
-		period: 'October 2025 – Present',
-		status: 'in-progress',
+		period: 'October 2026',
+		status: 'completed',
 		applicationsIntro:
 			'Five systems built for modules and research during the MSc. Titles open the public repository.',
 		overview: [
@@ -60,8 +60,7 @@ export const academicHistory: AcademicRecord[] = [
 		projects: [
 			{
 				name: 'Portfolio Journal',
-				summary:
-					'Offline-first Flutter journal for the Mobile Application Development portfolio.',
+				summary: 'Offline-first Flutter journal for the Mobile Application Development portfolio.',
 				repoUrl: 'https://github.com/zarnihlawn/portfolio-journal',
 				role: 'Sole developer',
 				documentation: [
@@ -126,8 +125,7 @@ export const academicHistory: AcademicRecord[] = [
 			},
 			{
 				name: 'Escape from Kidnappers in Abandoned House',
-				summary:
-					'Unity 3D VR escape experience — Team CoreX assignment; lead software developer.',
+				summary: 'Unity 3D VR escape experience — Team CoreX assignment; lead software developer.',
 				repoUrl: 'https://github.com/zarnihlawn/escape-from-kidnappers-in-abandoned-house',
 				role: 'Lead software developer',
 				documentation: [
@@ -389,8 +387,7 @@ export const academicHistory: AcademicRecord[] = [
 			},
 			{
 				name: 'Inventory Management Console App',
-				summary:
-					'C++ menu-driven console inventory tool with binary file persistence.',
+				summary: 'C++ menu-driven console inventory tool with binary file persistence.',
 				repoUrl: 'https://github.com/zarnihlawn/inventory-management-console-app',
 				role: 'Sole developer',
 				documentation: [

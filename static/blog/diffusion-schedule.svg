@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="A decaying noise curve over a baseline">
+	<rect width="640" height="640" fill="#f4f4f1" />
+	<g fill="none" stroke="#111111" stroke-width="2">
+		<path d="M110 170v330h420" />
+		<path d="M110 470c90 -10 150 -180 210 -180s140 150 210 150" />
+		<path d="M110 500h420" stroke-dasharray="7 6" />
+		<path d="M180 470v-30M250 470v-64M320 470v-64M390 470v-40M460 470v-22" />
+		<path d="M110 500h420" />
+	</g>
+</svg>

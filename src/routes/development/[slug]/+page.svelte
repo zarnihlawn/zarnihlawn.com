@@ -1,20 +1,21 @@
 <script lang="ts">
-	import DetailPage from '$lib/component/DetailPage.svelte';
 	import DevelopmentDocument from '$lib/component/DevelopmentDocument.svelte';
+	import StudyPage from '$lib/component/StudyPage.svelte';
+	import { readStudy } from '$lib/read-study';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	const project = $derived(data.project);
+	const view = $derived(readStudy({ kind: 'development', slug: data.project.slug }));
 </script>
 
-<DetailPage
-	title={project.name}
-	description={project.summary}
-	backHref="/development"
-	backLabel="Back to Development"
->
-	<div class="mt-4">
-		<DevelopmentDocument {project} />
-	</div>
-</DetailPage>
+{#if view && view.kind === 'development'}
+	<StudyPage
+		title={view.title}
+		lede={view.lede}
+		summary={view.summary}
+		path={view.path}
+		indexLabel="Development"
+	>
+		<DevelopmentDocument project={view.project} />
+	</StudyPage>
+{/if}
