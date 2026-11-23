@@ -1,5 +1,5 @@
-import { developmentDetailPath, developmentProjects } from '$lib/data/development';
 import { blogPostPath, blogPosts } from '$lib/blog';
+import { showcaseItems } from '$lib/showcase';
 
 export const HOME_TITLE = 'Zarni Hlawn — Software Engineer in Yangon, Myanmar';
 
@@ -50,11 +50,11 @@ export function projectItemListSchema(origin: string) {
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
-		itemListElement: developmentProjects.map((project, index) => ({
+		itemListElement: showcaseItems.map((item, index) => ({
 			'@type': 'ListItem',
 			position: index + 1,
-			name: project.name,
-			url: new URL(developmentDetailPath(project.slug), origin).href
+			name: item.name,
+			url: new URL(item.href, origin).href
 		}))
 	};
 }

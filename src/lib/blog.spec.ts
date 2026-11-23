@@ -1,16 +1,24 @@
+import { existsSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { blogCategories, blogPostPath, blogPosts, formatBlogDate, getBlogPostBySlug } from './blog';
+import {
+	blogAudioPath,
+	blogCategories,
+	blogPostPath,
+	blogPosts,
+	formatBlogDate,
+	getBlogPostBySlug
+} from './blog';
 
 describe('blogPosts', () => {
-	it('exposes six posts with complete frontmatter', () => {
-		expect(blogPosts).toHaveLength(6);
+	it('exposes the blog posts with complete frontmatter', () => {
+		expect(blogPosts).toHaveLength(2);
 
 		for (const post of blogPosts) {
 			expect(post.slug).toMatch(/^[a-z0-9-]+$/);
 			expect(post.title.trim()).not.toBe('');
 			expect(post.category.trim()).not.toBe('');
 			expect(post.excerpt.trim()).not.toBe('');
-			expect(post.cover).toMatch(/^\/blog\/[\w-]+\.svg$/);
+			expect(post.cover).toMatch(/^\/blog\/[\w-]+\.(svg|webp)$/);
 		}
 	});
 
@@ -37,6 +45,27 @@ describe('blogPosts', () => {
 		const slugs = blogPosts.map((post) => post.slug);
 		expect(new Set(slugs).size).toBe(slugs.length);
 	});
+
+	it('exposes table-of-contents sections with unique anchors', () => {
+		for (const post of blogPosts) {
+			expect(post.sections.length).toBeGreaterThan(0);
+
+			const ids = post.sections.map((section) => section.id);
+			expect(new Set(ids).size).toBe(ids.length);
+			for (const section of post.sections) {
+				expect(section.id).toMatch(/^[a-z0-9-]+$/);
+				expect(section.title.trim()).not.toBe('');
+			}
+		}
+	});
+
+	it('ships a narration file for every post', () => {
+		for (const post of blogPosts) {
+			const path = `static${blogAudioPath(post.slug)}`;
+			expect(existsSync(path)).toBe(true);
+			expect(statSync(path).size).toBeGreaterThan(0);
+		}
+	});
 });
 
 describe('blogCategories', () => {
@@ -52,13 +81,15 @@ describe('blogCategories', () => {
 
 describe('blogPostPath', () => {
 	it('builds a root-relative post url', () => {
-		expect(blogPostPath('offscreen-canvas-cost')).toBe('/blog/offscreen-canvas-cost');
+		expect(blogPostPath('icait-2026-masked-reconstruction-talk')).toBe(
+			'/blog/icait-2026-masked-reconstruction-talk'
+		);
 	});
 });
 
 describe('getBlogPostBySlug', () => {
 	it('finds a known post and rejects an unknown one', () => {
-		expect(getBlogPostBySlug('dialog-closed-itself')?.title).toContain('dialog');
+		expect(getBlogPostBySlug('icait-2026-masked-reconstruction-talk')?.title).toContain('ICAIT');
 		expect(getBlogPostBySlug('not-a-post')).toBeUndefined();
 	});
 });

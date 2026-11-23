@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="A grid of cells with a masked block">
-	<rect width="640" height="640" fill="#f4f4f1" />
-	<g fill="none" stroke="#111111" stroke-width="2">
-		<rect x="120" y="120" width="400" height="400" />
-		<path d="M220 120v400M320 120v400M420 120v400M120 220h400M120 320h400M120 420h400" />
-		<rect x="220" y="220" width="200" height="100" fill="#111111" stroke="none" />
-		<path d="M120 560h400" />
-	</g>
-</svg>

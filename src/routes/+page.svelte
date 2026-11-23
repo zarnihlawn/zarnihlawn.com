@@ -6,7 +6,7 @@
 	import ContactGlyph from '$lib/component/ContactGlyph.svelte';
 	import BlogCard from '$lib/component/BlogCard.svelte';
 	import { blogPosts } from '$lib/blog';
-	import { developmentDetailPath, developmentProjects } from '$lib/data/development';
+	import { showcaseItems } from '$lib/showcase';
 	import { languages } from '$lib/data/languages';
 	import { profile } from '$lib/data/profile';
 	import { technologies } from '$lib/data/tech-stacks';
@@ -23,14 +23,10 @@
 	let projectPage = $state(0);
 
 	const projectPages = $derived(
-		Array.from({ length: Math.ceil(developmentProjects.length / PROJECTS_PER_PAGE) }, (_, page) =>
-			developmentProjects.slice(page * PROJECTS_PER_PAGE, (page + 1) * PROJECTS_PER_PAGE)
+		Array.from({ length: Math.ceil(showcaseItems.length / PROJECTS_PER_PAGE) }, (_, page) =>
+			showcaseItems.slice(page * PROJECTS_PER_PAGE, (page + 1) * PROJECTS_PER_PAGE)
 		)
 	);
-	const reservedSlots = $derived(
-		PROJECTS_PER_PAGE - (projectPages[projectPage]?.length ?? PROJECTS_PER_PAGE)
-	);
-
 	const birthday = new Date('2006-02-10');
 
 	function calculateAge(date: Date) {
@@ -69,11 +65,19 @@
 		'menzies-database-manager': 'dbide',
 		'menzies-portal': 'tunnel',
 		'menzies-notepad': 'notepad',
-		'menzies-calculator': 'calculator'
+		'menzies-calculator': 'calculator',
+		'portfolio-journal': 'journal',
+		'itm-adaddae-adbench': 'diffusion',
+		'clinical-ir-app': 'retrieval',
+		'point-of-sale-system': 'pos',
+		'tv-repair-private-company': 'repair',
+		'health-promotion-board': 'web',
+		'inventory-management-console-app': 'inventory',
+		'vinyl-record-ecommerce': 'vinyl'
 	};
 
-	function markFor(slug: string): ComponentProps<typeof Schematic>['kind'] {
-		return marks[slug] ?? 'documents';
+	function markFor(key: string): ComponentProps<typeof Schematic>['kind'] {
+		return marks[key] ?? 'documents';
 	}
 
 	function pad(index: number) {
@@ -151,14 +155,30 @@
 				</ul>
 			</div>
 		</div>
-		<Schematic kind="hero" class="hero-schematic" />
+		<img
+			class="hero-portrait"
+			src="/zarni-hlawn.webp"
+			alt={profile.imageAlt}
+			width="420"
+			height="420"
+			fetchpriority="high"
+			decoding="async"
+		/>
 	</header>
 
 	<section class="section" id="work" aria-labelledby="work-heading">
 		<div class="draw-rule" aria-hidden="true"></div>
 		<h2 id="work-heading"><span class="idx">01</span>Work</h2>
 		<div class="section-split">
-			<Schematic kind="work" class="section-schematic" />
+			<img
+				class="section-photo"
+				src="/zarni-work.webp"
+				alt="Zarni coding at his laptop with a second monitor and shortcut desk mat"
+				width="1000"
+				height="879"
+				loading="lazy"
+				decoding="async"
+			/>
 			<ol class="timeline">
 				{#each workRows as entry, index (entry.href)}
 					<li>
@@ -218,24 +238,21 @@
 		<div class="draw-rule" aria-hidden="true"></div>
 		<h2 id="showcase-heading"><span class="idx">03</span>Project Showcase</h2>
 		<div class="work-grid">
-			{#each projectPages[projectPage] ?? [] as project, index (project.id)}
+			{#each projectPages[projectPage] ?? [] as project, index (project.key)}
 				<a
 					class="work-card"
-					href={developmentDetailPath(project.slug)}
-					data-study="development:{project.slug}"
+					href={project.href}
+					data-study="{project.study.kind}:{project.study.slug}"
 					onclick={(event) =>
-						openStudy(event, developmentDetailPath(project.slug), {
-							kind: 'development',
-							slug: project.slug
+						openStudy(event, project.href, {
+							kind: project.study.kind,
+							slug: project.study.slug
 						})}
 				>
 					<span class="idx">{pad(index)}</span>
 					<h3>{project.name}</h3>
-					<Schematic kind={markFor(project.slug)} class="mark" />
+					<Schematic kind={markFor(project.key)} class="mark" />
 				</a>
-			{/each}
-			{#each { length: reservedSlots } as _, slot (slot)}
-				<div class="work-card work-card-slot" aria-hidden="true"></div>
 			{/each}
 		</div>
 		<Paginator
@@ -321,7 +338,7 @@
 		<div class="draw-rule" aria-hidden="true"></div>
 		<h2 id="blog-heading"><span class="idx">07</span>Blog</h2>
 		<div class="blog-grid">
-			{#each blogPosts.slice(0, 6) as post (post.slug)}
+			{#each blogPosts.slice(0, 9) as post (post.slug)}
 				<BlogCard {post} />
 			{/each}
 		</div>

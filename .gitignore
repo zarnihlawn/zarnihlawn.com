@@ -29,3 +29,5 @@ project.inlang/cache/
 
 .agents/*
 dev-log/*
+# TTS toolchain for npm run audio
+.venv

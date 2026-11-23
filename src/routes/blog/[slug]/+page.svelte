@@ -1,21 +1,15 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
+	import BlogRail from '$lib/component/BlogRail.svelte';
 	import Seo from '$lib/component/Seo.svelte';
 	import StudyChrome from '$lib/component/StudyChrome.svelte';
 	import { blogPostPath, formatBlogDate } from '$lib/blog';
+	import { blogBody } from '$lib/blog-body';
 	import { creativeWorkSchema, metaDescription, pageTitle } from '$lib/seo';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	const bodies = import.meta.glob<{ default: Component }>('/src/lib/content/blog/*.md', {
-		eager: true
-	});
-
-	const slugFromPath = (path: string) => path.slice(path.lastIndexOf('/') + 1).replace(/\.md$/, '');
-	const Body = $derived(
-		Object.entries(bodies).find(([path]) => slugFromPath(path) === data.post.slug)?.[1].default
-	);
+	const Body = $derived(blogBody(data.post.slug));
 
 	const description = $derived(metaDescription(data.post.excerpt));
 </script>
@@ -36,9 +30,25 @@
 			indexLabel="Blog"
 			mode="page"
 		>
-			{#if Body}
-				<Body />
-			{/if}
+			<div class="blog-post-main">
+				<!-- alt is empty: the h1 directly above already names the post. -->
+				<figure class="blog-cover">
+					<img
+						src={data.post.cover}
+						alt=""
+						width="640"
+						height="640"
+						fetchpriority="high"
+						decoding="sync"
+					/>
+				</figure>
+				{#if Body}
+					<Body />
+				{/if}
+			</div>
+			{#snippet aside()}
+				<BlogRail slug={data.post.slug} sections={data.post.sections} />
+			{/snippet}
 		</StudyChrome>
 	</article>
 </div>

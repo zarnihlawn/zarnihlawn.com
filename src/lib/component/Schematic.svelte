@@ -4,7 +4,6 @@
 		class: className = ''
 	}: {
 		kind:
-			| 'hero'
 			| 'work'
 			| 'academic'
 			| 'library'
@@ -25,28 +24,20 @@
 			| 'dbide'
 			| 'tunnel'
 			| 'notepad'
-			| 'calculator';
+			| 'calculator'
+			| 'journal'
+			| 'diffusion'
+			| 'retrieval'
+			| 'pos'
+			| 'repair'
+			| 'web'
+			| 'inventory'
+			| 'vinyl';
 		class?: string;
 	} = $props();
 </script>
 
-{#if kind === 'hero'}
-	<svg class={className} viewBox="0 0 320 260" width="320" height="260" aria-hidden="true">
-		<g fill="none" stroke="currentColor" stroke-width="1.25">
-			<path d="M16 214h288" />
-			<path d="M70 214l24 18M120 214l24 18M170 214l24 18M220 214l24 18" />
-			<polygon points="118,78 176,108 118,138 60,108" />
-			<polygon points="60,108 118,138 118,196 60,166" />
-			<polygon points="176,108 118,138 118,196 176,166" />
-			<polygon points="214,46 262,70 214,94 166,70" />
-			<polygon points="166,70 214,94 214,142 166,118" />
-			<polygon points="262,70 214,94 214,142 262,118" />
-			<polygon points="246,128 286,148 246,168 206,148" />
-			<polygon points="206,148 246,168 246,204 206,184" />
-			<polygon points="286,148 246,168 246,204 286,184" />
-		</g>
-	</svg>
-{:else if kind === 'work'}
+{#if kind === 'work'}
 	<svg class={className} viewBox="0 0 320 260" width="320" height="260" aria-hidden="true">
 		<g fill="none" stroke="currentColor" stroke-width="1.25">
 			<path d="M20 218h280" />
@@ -318,6 +309,103 @@
 			<rect x="100" y="74" width="26" height="14" />
 			<rect x="67" y="94" width="26" height="6" />
 			<path d="M41 61h12M74 61h12M107 61h12M41 81h12M74 81h12M107 81h12" stroke-dasharray="2 3" />
+		</g>
+	</svg>
+{:else if kind === 'journal'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<rect x="48" y="12" width="58" height="96" rx="6" />
+			<path d="M68 20h18" />
+			<path d="M58 34h28M58 46h38M58 58h22M58 70h34M58 82h26" />
+			<path d="M118 66l14 14-6 6-14-14z" />
+			<path d="M112 72l6 6" />
+			<circle cx="66" cy="98" r="3" />
+		</g>
+	</svg>
+{:else if kind === 'diffusion'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<path d="M16 96V24M16 96h128" />
+			<path d="M24 84l8-22 6 10 5-26 6 30 6-16 6 22 6-8" />
+			<path d="M74 60h14M80 55l6 5-6 5" />
+			<path d="M96 88c6-2 8-8 10-14s4-14 10-18 12-2 20 0" />
+			<circle cx="38" cy="46" r="2" fill="currentColor" stroke="none" />
+			<circle cx="58" cy="66" r="2" fill="currentColor" stroke="none" />
+			<circle cx="30" cy="72" r="2" fill="currentColor" stroke="none" />
+			<path d="M96 24v72" stroke-dasharray="3 3" />
+		</g>
+	</svg>
+{:else if kind === 'retrieval'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<rect x="16" y="20" width="52" height="74" />
+			<path d="M24 32h36M24 44h36M24 56h24M24 68h30" />
+			<circle cx="96" cy="46" r="20" />
+			<path d="M110 60l18 18" />
+			<path d="M84 46h24" />
+			<rect x="66" y="92" width="76" height="6" />
+			<rect x="66" y="104" width="48" height="6" />
+		</g>
+	</svg>
+{:else if kind === 'pos'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<path d="M34 12h84v84l-10 6-10-6-10 6-10-6-10 6-10-6-12 6z" />
+			<path d="M48 26h56M48 38h40" />
+			<path d="M48 54h8M62 54h6M74 54h8M88 54h6" stroke-dasharray="2 3" />
+			<path d="M48 70h56M48 80h30" />
+			<rect x="102" y="66" width="18" height="18" />
+			<path d="M111 70v10M105 75h12" stroke-dasharray="2 2" />
+		</g>
+	</svg>
+{:else if kind === 'repair'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<rect x="16" y="18" width="92" height="62" rx="3" />
+			<path d="M62 80v10M46 90h32" />
+			<path d="M32 42c8-10 18 10 26 0s18 8 26 0" />
+			<path d="M120 30l16-16M126 36l16-16" />
+			<path d="M120 30l6 6" />
+			<circle cx="128" cy="26" r="2" fill="currentColor" stroke="none" />
+		</g>
+	</svg>
+{:else if kind === 'web'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<rect x="14" y="20" width="118" height="80" />
+			<path d="M14 36h118" />
+			<circle cx="22" cy="28" r="2" fill="currentColor" stroke="none" />
+			<circle cx="30" cy="28" r="2" fill="currentColor" stroke="none" />
+			<path d="M26 52h34M26 64h44M26 76h28" />
+			<rect x="86" y="48" width="36" height="16" />
+			<path d="M104 74v10M98 79h12" />
+			<circle cx="104" cy="92" r="8" stroke-dasharray="3 3" />
+		</g>
+	</svg>
+{:else if kind === 'inventory'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<path d="M14 96h132" />
+			<path d="M28 96V52h44v44" />
+			<path d="M28 68h44M28 82h44" />
+			<path d="M84 96V40h44v56" />
+			<path d="M84 60h44M84 78h44" />
+			<path d="M50 52v16M106 40v20" />
+			<circle cx="60" cy="60" r="2" fill="currentColor" stroke="none" />
+			<circle cx="116" cy="50" r="2" fill="currentColor" stroke="none" />
+		</g>
+	</svg>
+{:else if kind === 'vinyl'}
+	<svg class={className} viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
+		<g fill="none" stroke="currentColor" stroke-width="1.25">
+			<circle cx="74" cy="60" r="44" />
+			<circle cx="74" cy="60" r="32" stroke-dasharray="3 4" />
+			<circle cx="74" cy="60" r="20" stroke-dasharray="3 4" />
+			<circle cx="74" cy="60" r="5" />
+			<circle cx="74" cy="60" r="1.5" fill="currentColor" stroke="none" />
+			<path d="M138 16l-26 34" />
+			<circle cx="138" cy="16" r="5" />
+			<path d="M112 50l-5 8 6 3 4-8z" />
 		</g>
 	</svg>
 {:else}

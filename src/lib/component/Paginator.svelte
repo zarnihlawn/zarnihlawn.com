@@ -18,11 +18,13 @@
 	{#each indexes as index (index)}
 		<button
 			type="button"
-			class="paginator-dot"
+			class="paginator-page"
 			class:is-active={index === current}
 			aria-current={index === current ? 'true' : undefined}
 			aria-label="Page {index + 1} of {pages}"
 			onclick={() => onSelect(index)}
-		></button>
+		>
+			{index + 1}
+		</button>
 	{/each}
 </nav>

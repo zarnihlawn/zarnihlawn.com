@@ -37,10 +37,12 @@ test('each section draws exactly one divider rule', async ({ page }) => {
 	expect(heroBottomBorder).toBe('0px');
 });
 
-test('section illustrations draw a single ground line', async ({ page }) => {
+test('section illustrations draw a single ground line and the hero shows the portrait', async ({
+	page
+}) => {
 	await page.goto('/');
 
-	for (const id of ['work', 'academic', 'conference-papers']) {
+	for (const id of ['academic', 'conference-papers']) {
 		const horizontalPaths = await page
 			.locator(`#${id} svg path`)
 			.evaluateAll((paths) =>
@@ -49,12 +51,17 @@ test('section illustrations draw a single ground line', async ({ page }) => {
 		expect(horizontalPaths).toHaveLength(1);
 	}
 
-	const heroPaths = await page
-		.locator('.hero-schematic path')
-		.evaluateAll((paths) =>
-			paths.map((path) => path.getAttribute('d') ?? '').filter((d) => /^M\d+\s+\d+h\d+$/.test(d))
-		);
-	expect(heroPaths).toHaveLength(1);
+	const workPhoto = page.locator('#work img.section-photo');
+	await expect(workPhoto).toHaveAttribute('src', '/zarni-work.webp');
+	await expect(workPhoto).toHaveAttribute('width', '1000');
+	await expect(workPhoto).toHaveAttribute('height', '879');
+	await expect(workPhoto).toHaveAttribute('loading', 'lazy');
+
+	const heroPortrait = page.locator('.hero-portrait');
+	await expect(heroPortrait).toHaveAttribute('src', '/zarni-hlawn.webp');
+	await expect(heroPortrait).toHaveAttribute('width', '420');
+	await expect(heroPortrait).toHaveAttribute('height', '420');
+	await expect(page.locator('.hero img')).toHaveCount(1);
 });
 
 test('sections centre their content between divider rules', async ({ page }) => {
@@ -128,6 +135,41 @@ test('every showcase project resolves to its own detail page', async ({ page }) 
 	await expect(page.locator('.study-link')).toHaveCount(0);
 });
 
+test('academic project cards sit in the showcase and open their program', async ({ page }) => {
+	await page.goto('/');
+
+	const grid = page.locator('#project-showcase .work-grid');
+	const dots = page.locator('#project-showcase .paginator-page');
+	await expect(dots).toHaveCount(2);
+	await expect(dots.first()).toHaveText('1');
+	await expect(dots.last()).toHaveText('2');
+
+	// The paginator sits clear of the grid frame instead of touching it.
+	const gap = await page.locator('#project-showcase .paginator').evaluate((nav) => {
+		const above = nav.previousElementSibling!.getBoundingClientRect();
+		return nav.getBoundingClientRect().top - above.bottom;
+	});
+	expect(gap).toBeGreaterThanOrEqual(24);
+
+	// Seventeen development projects lead, then academic work fills the rest of page one.
+	const journal = grid.locator('a[href="/academic/msc-computer-science"]', {
+		hasText: 'Portfolio Journal'
+	});
+	await expect(journal.locator('.kind')).toHaveCount(0);
+	await expect(journal.locator('svg.mark')).toHaveCount(1);
+
+	await journal.click();
+	await expect(page.locator('dialog.study-dialog h2')).toHaveText('MSc Computer Science');
+	await expect(page.locator('dialog.study-dialog')).toContainText('Portfolio Journal');
+	await page.keyboard.press('Escape');
+
+	await dots.nth(1).click();
+	await expect(grid.locator('a[href^="/academic/"]')).toHaveCount(7);
+	for (const card of await grid.locator('a').all()) {
+		await expect(card).toHaveAttribute('href', /^\/academic\//);
+	}
+});
+
 test('scroll progress bar uses the signal color', async ({ page }) => {
 	await page.goto('/');
 
@@ -169,7 +211,9 @@ test('the dialog trigger keeps no ring after close and rings on hover', async ({
 	expect(await outline()).toBe('solid');
 });
 
-test('project showcase is a 6 column by 3 row grid with a paginator', async ({ page }) => {
+test('project showcase is a 6 column grid that leaves blank paper, not ink, in a short row', async ({
+	page
+}) => {
 	await page.goto('/');
 
 	const grid = page.locator('#project-showcase .work-grid');
@@ -179,7 +223,17 @@ test('project showcase is a 6 column by 3 row grid with a paginator', async ({ p
 	).toHaveLength(6);
 	await expect(grid.locator('.work-card')).toHaveCount(18);
 
-	const active = page.locator('#project-showcase .paginator-dot.is-active');
+	// The grid must not paint ink behind its cells: that is what showed through as black voids.
+	expect(await grid.evaluate((element) => getComputedStyle(element).backgroundColor)).toBe(
+		'rgba(0, 0, 0, 0)'
+	);
+
+	// Page two overflows the first row, so its tail must end in page paper with no filler cells.
+	await page.locator('#project-showcase .paginator-page').last().click();
+	await expect(grid.locator('.work-card')).toHaveCount(7);
+	await expect(grid.locator('.work-card-slot')).toHaveCount(0);
+
+	const active = page.locator('#project-showcase .paginator-page.is-active');
 	await expect(active).toHaveCount(1);
 	await expect(active).toHaveAttribute('aria-current', 'true');
 });
@@ -261,15 +315,21 @@ test('the header shows a black Blog button beside a signal Mail button', async (
 	expect(await background(actions.nth(1))).toBe('rgb(250, 22, 63)');
 });
 
-test('the blog section is numbered and shows the latest six posts as a card grid', async ({
-	page
-}) => {
+test('the blog section is numbered and shows the latest posts as a card grid', async ({ page }) => {
 	await page.goto('/');
 
 	await expect(page.locator('#blog-heading')).toHaveText('07Blog');
 
 	const cards = page.locator('#blog .blog-card');
-	await expect(cards).toHaveCount(6);
+	await expect(cards).toHaveCount(2);
+
+	// Home caps the strip at nine tiles in three columns; a short strip must not add filler cells.
+	expect(
+		await page
+			.locator('#blog .blog-grid')
+			.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '))
+	).toHaveLength(3);
+	await expect(page.locator('#blog .blog-grid > *')).toHaveCount(2);
 
 	for (const card of await cards.all()) {
 		await expect(card).toHaveAttribute('href', /^\/blog\/[a-z0-9-]+$/);
@@ -296,12 +356,18 @@ test('the blog button opens an index rendered as the same card grid', async ({ p
 	await expect(page.locator('h1')).toHaveText('Blog');
 	await expect(page.locator('.timeline')).toHaveCount(0);
 
-	const cards = page.locator('.blog-grid .blog-card');
-	await expect(cards).toHaveCount(6);
-	await expect(page.locator('.blog-grid')).toHaveCount(1);
+	const grid = page.locator('.blog-grid');
+	await expect(grid).toHaveCount(1);
+	await expect(grid.locator('.blog-card')).toHaveCount(2);
+
+	// The index is three columns wide with as many rows as the posts need, no empty cells.
+	expect(
+		await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '))
+	).toHaveLength(3);
+	await expect(grid.locator('> *')).toHaveCount(2);
 });
 
-test('the blog filters sit beside the title and narrow the grid', async ({ page }) => {
+test('the blog filters sit beside the title', async ({ page }) => {
 	await page.goto('/blog');
 
 	const head = page.locator('.blog-head');
@@ -321,38 +387,152 @@ test('the blog filters sit beside the title and narrow the grid', async ({ page 
 	await expect(filters.first()).toHaveText('All');
 	await expect(filters.first()).toHaveAttribute('aria-pressed', 'true');
 
-	const cards = page.locator('.blog-grid .blog-card');
-	const total = await cards.count();
 	const target = filters.nth(1);
 	const label = (await target.textContent())?.trim() ?? '';
 
 	await target.click();
 	await expect(target).toHaveAttribute('aria-pressed', 'true');
 	await expect(filters.first()).toHaveAttribute('aria-pressed', 'false');
-
-	const filtered = await cards.count();
-	expect(filtered).toBeGreaterThan(0);
-	expect(filtered).toBeLessThan(total);
-
-	for (const card of await cards.all()) {
-		await expect(card.locator('.blog-pill')).toHaveText(label);
-	}
+	await expect(page.locator('.blog-grid .blog-card .blog-pill')).toHaveText(label);
 });
 
 test('a post renders its markdown body and its own title', async ({ page }) => {
-	await page.goto('/blog/masked-cross-feature-reconstruction');
+	await page.goto('/blog/icait-2026-masked-reconstruction-talk');
 
-	await expect(page.locator('h1')).toHaveText(
-		'Masked Cross-Feature Reconstruction, in plain terms'
-	);
-	await expect(page).toHaveTitle(/Masked Cross-Feature Reconstruction/);
-	await expect(page.locator('.study-chrome-body')).toContainText('The premise');
+	await expect(page.locator('h1')).toHaveText('Presenting masked reconstruction at ICAIT 2026');
+	await expect(page).toHaveTitle(/Presenting masked reconstruction at ICAIT 2026/);
+	await expect(page.locator('.study-chrome-body')).toContainText('The problem, without the jargon');
 	await expect(page.locator('.study-lede')).toContainText('Research');
+});
+
+test('a cold load on a toc anchor keeps the section body on screen', async ({ page }) => {
+	await page.goto(
+		'/blog/icait-2026-masked-reconstruction-talk#why-hiding-cells-is-not-just-cheap-noise'
+	);
+
+	const heading = page.locator('#why-hiding-cells-is-not-just-cheap-noise');
+	await expect(heading).toBeVisible();
+	await expect(page.locator('.blog-post-main p').first()).toBeVisible();
+	await expect(heading.locator('xpath=following-sibling::p[1]')).toContainText(
+		'Each cell in a row can be imagined with a dial'
+	);
 });
 
 test('an unknown post slug returns a 404', async ({ page }) => {
 	const response = await page.goto('/blog/not-a-real-post');
 	expect(response?.status()).toBe(404);
+});
+
+test('a post paints its title in the signal color and shows its cover', async ({ page }) => {
+	await page.goto('/blog/icait-2026-masked-reconstruction-talk');
+
+	const color = await page
+		.locator('.blog-post .study-title')
+		.evaluate((element) => getComputedStyle(element).color);
+	expect(color).toBe('rgb(250, 22, 63)');
+
+	const cover = page.locator('.blog-cover img');
+	await expect(cover).toHaveAttribute('width', '640');
+	await expect(cover).toHaveAttribute('height', '640');
+	await expect(cover).toHaveAttribute('src', '/blog/icait-talk.webp');
+	await expect
+		.poll(() => cover.evaluate((element: HTMLImageElement) => element.naturalWidth))
+		.toBeGreaterThan(0);
+});
+
+test('the table of contents links to real headings and tracks reading progress', async ({
+	page
+}) => {
+	await page.goto('/blog/icait-2026-masked-reconstruction-talk');
+
+	const links = page.locator('.blog-toc a');
+	await expect(links).toHaveCount(8);
+
+	for (const link of await links.all()) {
+		const id = (await link.getAttribute('href'))!.replace(/^#/, '');
+		await expect(page.locator(`#${id}`)).toHaveCount(1);
+	}
+
+	const label = page.locator('.blog-progress-label');
+	await expect(label).toHaveText('0% read');
+
+	await page.locator('.blog-toc a').last().click();
+	await expect(page).toHaveURL(/#what-i-would-do-next$/);
+	await expect
+		.poll(async () => Number((await label.textContent())!.replace(/\D/g, '')))
+		.toBeGreaterThan(0);
+	await expect(page.locator('.blog-toc a[aria-current="true"]')).toHaveCount(1);
+});
+
+test('the listen button targets the prebuilt narration and toggles state', async ({ page }) => {
+	await page.goto('/blog/icait-2026-masked-reconstruction-talk');
+
+	const button = page.locator('.blog-audio');
+	await expect(button).toHaveAttribute('aria-pressed', 'false');
+	await expect(button).toHaveAttribute('aria-label', 'Listen to this article');
+	await expect(page.locator('audio')).toHaveAttribute(
+		'src',
+		'/blog/audio/icait-2026-masked-reconstruction-talk.mp3'
+	);
+	await expect(page.locator('audio')).toHaveAttribute('preload', 'none');
+
+	const status = await page.locator('audio').evaluate(async (element: HTMLAudioElement) => {
+		const response = await fetch(element.src);
+		return response.status;
+	});
+	expect(status).toBe(200);
+});
+
+test('the section indicator rebinds to the index after a blog round trip', async ({ page }) => {
+	await page.goto('/');
+	const nav = page.locator('.section-nav a');
+	const current = () =>
+		nav.evaluateAll((links) =>
+			links
+				.filter((a) => a.getAttribute('aria-current') === 'true')
+				.map((a) => a.textContent?.trim())
+		);
+
+	// Scroll to the bottom so Contribution is latched before leaving.
+	const toBottom = () => page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight }));
+	await toBottom();
+	await expect.poll(async () => (await current())[0]).toBe('Contribution');
+
+	await page.goto('/blog');
+	await page.goto('/blog/icait-2026-masked-reconstruction-talk');
+	await page.locator('.wordmark').click();
+	await expect(page).toHaveURL('/');
+	await expect(page.locator('#work')).toBeVisible();
+
+	// The header outlived the index DOM, so the observer must have rebound:
+	// at the top of the fresh page no section is current, not a stale Contribution.
+	await expect(nav.locator('[aria-current="true"]')).toHaveCount(0);
+
+	// And it is live again: the last section still lights up on scroll.
+	await toBottom();
+	await expect.poll(async () => (await current())[0]).toBe('Contribution');
+});
+
+test('each section header link lands on its own section from a fresh load', async ({ page }) => {
+	const targets = [
+		['Work', 'work'],
+		['Academic', 'academic'],
+		['Projects', 'project-showcase'],
+		['Papers', 'conference-papers'],
+		['Record', 'record'],
+		['Contribution', 'contribution']
+	] as const;
+
+	for (const [label, id] of targets) {
+		// A fresh load is what exposes it: clicking through in one session warms
+		// up the offscreen sections' real heights and hides the misplacement.
+		await page.goto('/');
+		await page.locator('.section-nav a', { hasText: label }).click();
+		await expect
+			.poll(() => page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top))
+			.toBeGreaterThan(-80);
+		await expect(page.locator('.section-nav a[aria-current="true"]')).toHaveText(label);
+	}
 });
 
 test('the document scrollbar matches the design palette', async ({ page }) => {

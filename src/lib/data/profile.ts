@@ -4,7 +4,7 @@ export const profile = {
 	roleLeft: 'Software Engineer',
 	roleRight: 'Architect',
 	location: 'Yangon, Myanmar',
-	imageAlt: 'Zarni Hlawn at his desk'
+	imageAlt: 'Portrait of Zarni Hlawn'
 } as const;
 
 export const detailRoutes = [

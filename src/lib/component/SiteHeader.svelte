@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { onMount } from 'svelte';
 
 	const sections = [
 		{ id: 'work', index: '01', label: 'Work' },
@@ -15,11 +14,21 @@
 
 	const onIndex = $derived(page.url.pathname === '/' || Boolean(page.state.study));
 
-	onMount(() => {
+	// The header outlives the index page, so the observer has to rebind to the
+	// fresh section nodes every time the index DOM is swapped back in.
+	$effect(() => {
+		if (!onIndex) {
+			active = '';
+			return;
+		}
+
 		const nodes = sections
 			.map((section) => document.getElementById(section.id))
 			.filter((node): node is HTMLElement => node instanceof HTMLElement);
-		if (nodes.length === 0) return;
+		if (nodes.length === 0) {
+			active = '';
+			return;
+		}
 
 		const seen = new Map<string, IntersectionObserverEntry>();
 		const observer = new IntersectionObserver(

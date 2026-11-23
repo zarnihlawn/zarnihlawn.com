@@ -7,6 +7,7 @@
 		indexLabel,
 		mode,
 		onClose,
+		aside,
 		children
 	}: {
 		title: string;
@@ -14,6 +15,7 @@
 		indexLabel: string;
 		mode: 'dialog' | 'page';
 		onClose?: () => void;
+		aside?: Snippet;
 		children: Snippet;
 	} = $props();
 </script>
@@ -34,6 +36,9 @@
 	{/if}
 	<p class="lede study-lede">{lede}</p>
 </header>
-<div class="study-chrome-body">
+<div class="study-chrome-body" class:study-chrome-body--split={aside}>
 	{@render children()}
+	{#if aside}
+		<aside class="study-chrome-aside">{@render aside()}</aside>
+	{/if}
 </div>

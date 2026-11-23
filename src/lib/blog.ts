@@ -1,3 +1,10 @@
+import { anchorSlug } from '$lib/blog-anchor';
+
+export type BlogSection = {
+	id: string;
+	title: string;
+};
+
 export type BlogPost = {
 	slug: string;
 	title: string;
@@ -7,9 +14,10 @@ export type BlogPost = {
 	excerpt: string;
 	cover: string;
 	minutes: number;
+	sections: BlogSection[];
 };
 
-export type BlogPostMeta = Omit<BlogPost, 'slug' | 'minutes'>;
+export type BlogPostMeta = Omit<BlogPost, 'slug' | 'minutes' | 'sections'>;
 
 const WORDS_PER_MINUTE = 200;
 
@@ -34,11 +42,23 @@ function bodyWords(path: string): number {
 	return body.split(/\s+/).filter(Boolean).length;
 }
 
+const HEADING = /^##\s+(.+)$/gm;
+
+/** Same ids the rehype plugin writes at build time, so the rail links land on the heading. */
+function bodySections(path: string): BlogSection[] {
+	const raw = bodyModules[path] ?? '';
+	return [...raw.matchAll(HEADING)].map(([, title]) => {
+		const clean = title.trim();
+		return { id: anchorSlug(clean), title: clean };
+	});
+}
+
 export const blogPosts: BlogPost[] = Object.entries(metadataModules)
 	.map(([path, meta]) => ({
 		...meta,
 		slug: slugFromPath(path),
-		minutes: Math.max(1, Math.round(bodyWords(path) / WORDS_PER_MINUTE))
+		minutes: Math.max(1, Math.round(bodyWords(path) / WORDS_PER_MINUTE)),
+		sections: bodySections(path)
 	}))
 	.sort((a, b) => b.date.localeCompare(a.date));
 
@@ -48,6 +68,10 @@ export const blogCategories: string[] = [...new Set(blogPosts.map((post) => post
 
 export function blogPostPath(slug: string): string {
 	return `/blog/${slug}`;
+}
+
+export function blogAudioPath(slug: string): string {
+	return `/blog/audio/${slug}.mp3`;
 }
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

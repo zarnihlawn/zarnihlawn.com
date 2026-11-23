@@ -1,5 +1,26 @@
 import { mdsvex } from 'mdsvex';
 import adapter from '@sveltejs/adapter-netlify';
+import { anchorSlug } from './src/lib/blog-anchor.js';
+
+function textOf(node) {
+	if (typeof node.value === 'string') return node.value;
+	return (node.children ?? []).map(textOf).join('');
+}
+
+/**
+ * Post bodies get their table-of-contents anchors at build time, so the rail works
+ * without JavaScript and the ids stay crawlable.
+ */
+const headingIds = () => (tree) => {
+	const walk = (node) => {
+		if (node.type === 'element' && node.tagName === 'h2') {
+			const id = anchorSlug(textOf(node));
+			if (id) node.properties = { ...node.properties, id };
+		}
+		for (const child of node.children ?? []) walk(child);
+	};
+	walk(tree);
+};
 
 /**
  * mdsvex still emits `<script context="module">` for frontmatter, which Svelte 5 warns about.
@@ -22,7 +43,7 @@ const config = {
 	kit: {
 		adapter: adapter()
 	},
-	preprocess: [mdsvex({ extensions: ['.svx', '.md'] })],
+	preprocess: [mdsvex({ extensions: ['.svx', '.md'], rehypePlugins: [headingIds] })],
 	extensions: ['.svelte', '.svx', '.md']
 };
 

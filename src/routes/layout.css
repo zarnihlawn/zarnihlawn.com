@@ -349,11 +349,13 @@ h1,
 	}
 }
 
-.hero-schematic {
+.hero-portrait {
 	justify-self: end;
-	width: min(100%, 320px);
+	align-self: end;
+	width: min(100%, 360px);
 	height: auto;
-	color: var(--ink);
+	border: 1px solid var(--ink);
+	box-shadow: 4px 4px 0 var(--ink);
 }
 
 .section-split {
@@ -367,6 +369,14 @@ h1,
 	width: min(100%, 320px);
 	height: auto;
 	color: var(--ink);
+	justify-self: start;
+}
+
+.section-photo {
+	width: min(100%, 320px);
+	height: auto;
+	border: 1px solid var(--ink);
+	box-shadow: 4px 4px 0 var(--ink);
 	justify-self: start;
 }
 
@@ -428,23 +438,34 @@ h1,
 	}
 }
 
+/* Heights are the measured desktop values: a placeholder that is close to the
+   real box keeps in-page anchor jumps landing on the right section, since the
+   browser resolves the target offset before the offscreen section has laid out. */
 #work,
 #academic,
-#project-showcase,
 #conference-papers,
 #record,
-#contribution,
-#blog {
+#contribution {
 	content-visibility: auto;
-	contain-intrinsic-size: auto 720px;
+	contain-intrinsic-size: auto 480px;
 }
 
+#project-showcase {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 860px;
+}
+
+#blog {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 1440px;
+}
+
+/* Each card owns its frame and the grid owns nothing: a partly filled last row then
+   ends in blank paper instead of ink-coloured cells. */
 .work-grid {
 	display: grid;
-	grid-template-columns: repeat(6, minmax(0, 1fr));
-	gap: 1px;
-	background: var(--ink);
-	border: 1px solid var(--ink);
+	grid-template-columns: repeat(auto-fit, minmax(min(10.5rem, 100%), 1fr));
+	gap: 0.5rem;
 }
 
 .work-card {
@@ -454,13 +475,9 @@ h1,
 	min-height: 11rem;
 	padding: 0.85rem;
 	background: var(--paper);
+	border: 1px solid var(--ink);
 	color: inherit;
 	text-decoration: none;
-}
-
-/* Empty cell that keeps the 6x3 frame intact when a page has fewer than 18 projects. */
-.work-card-slot {
-	background: var(--paper);
 }
 
 .work-card h3 {
@@ -495,12 +512,13 @@ h1,
 }
 
 /* Blog */
+/* 3 across, 2 on a tablet, 1 on a phone. Only real cards occupy cells. */
 .blog-grid {
 	display: grid;
+	/* Three tiles per row, one column on a phone, and no filler cells: a short last
+	   row simply stops, so the frame never wraps empty grid area. */
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 1px;
-	background: var(--ink);
-	border: 1px solid var(--ink);
+	gap: 0.5rem;
 }
 
 .blog-card {
@@ -509,6 +527,7 @@ h1,
 	gap: 0.75rem;
 	padding: 1rem;
 	background: var(--paper);
+	border: 1px solid var(--ink);
 	color: inherit;
 	text-decoration: none;
 }
@@ -533,7 +552,9 @@ h1,
 
 .blog-card img {
 	width: 100%;
-	aspect-ratio: 1;
+	/* One post spans the whole row, so the cover must not grow into a full-width square. */
+	aspect-ratio: 16 / 10;
+	max-height: 20rem;
 	object-fit: cover;
 	border: 1px solid var(--ink);
 	filter: grayscale(1);
@@ -602,13 +623,139 @@ button.blog-pill[aria-pressed='true'] {
 }
 
 .blog-post {
-	max-width: 44rem;
+	max-width: min(100%, 62rem);
+}
+
+/* A 62rem shell splits into a 44rem reading column plus the rail. */
+.study-chrome-body--split {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 15rem;
+	gap: 0 2.5rem;
+	align-items: start;
+}
+
+.study-chrome-aside {
+	position: sticky;
+	top: 5rem;
+	min-width: 0;
+}
+
+.blog-post .study-title {
+	color: var(--signal);
+}
+
+.blog-cover {
+	margin: 0 0 1.5rem;
+}
+
+.blog-post-main {
+	min-width: 0;
+}
+
+.blog-cover img {
+	display: block;
+	width: 100%;
+	max-width: 18rem;
+	height: auto;
+	border: 1px solid var(--ink);
+	filter: grayscale(1);
+}
+
+.blog-rail {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.blog-audio {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	padding: 0;
+	border: 1px solid var(--ink);
+	background: var(--paper);
+	color: var(--ink);
+	box-shadow: 2px 2px 0 var(--ink);
+	cursor: pointer;
+	transition:
+		background-color 160ms ease,
+		color 160ms ease,
+		box-shadow 160ms ease,
+		translate 160ms ease;
+}
+
+.blog-audio[aria-pressed='true'] {
+	background: var(--signal);
+	border-color: var(--signal);
+	color: var(--paper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.blog-audio:hover,
+	.blog-audio:focus-visible {
+		background: var(--ink);
+		color: var(--paper);
+		box-shadow: none;
+		translate: 2px 2px;
+	}
+}
+
+.blog-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.blog-progress-track {
+	height: 0.5rem;
+	border: 1px solid var(--ink);
+}
+
+.blog-progress-fill {
+	height: 100%;
+	background: var(--signal);
+	transition: width 120ms linear;
+}
+
+.blog-progress-label {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-size: 0.65rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.blog-toc ol {
+	margin: 0.5rem 0 0;
+	padding: 0;
+	list-style: none;
+	border-left: 1px solid var(--ink);
+}
+
+.blog-toc a {
+	display: block;
+	padding: 0.45rem 0 0.45rem 0.85rem;
+	border-bottom: 1px solid transparent;
+	color: inherit;
+	font-size: 0.85rem;
+	line-height: 1.3;
+	text-decoration: none;
+}
+
+.blog-toc a[aria-current='true'] {
+	box-shadow: inset 2px 0 0 var(--signal);
+	color: var(--signal);
 }
 
 .blog-post :where(h2) {
 	margin: 2rem 0 0.75rem;
 	font-size: 1.6rem;
 	letter-spacing: -0.03em;
+	/* Keeps a table-of-contents jump clear of the sticky header. */
+	scroll-margin-top: 5rem;
 }
 
 .blog-post :where(p, li) {
@@ -660,23 +807,30 @@ button.blog-pill[aria-pressed='true'] {
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
+	margin-top: 2.5rem;
 }
 
-.paginator-dot {
-	width: 2.25rem;
-	height: 0.5rem;
-	padding: 0;
+.paginator-page {
+	min-width: 2rem;
+	height: 2rem;
+	padding: 0 0.4rem;
 	border: 1px solid var(--ink);
 	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	line-height: 1;
 	cursor: pointer;
 	transition:
 		background-color 160ms ease,
+		color 160ms ease,
 		outline-color 160ms ease;
 }
 
-.paginator-dot.is-active {
+.paginator-page.is-active {
 	background: var(--signal);
 	border-color: var(--signal);
+	color: var(--paper);
 }
 
 .stack-line {
@@ -908,31 +1062,34 @@ button.hero-jump {
 	font-size: clamp(4rem, 12vw, 8rem);
 }
 
-@media (max-width: 1100px) {
-	.work-grid {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+@media (max-width: 1000px) {
+	/* The rail stacks above the article once the two columns would crowd each other. */
+	.study-chrome-body--split {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
 	}
 
-	.blog-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	.study-chrome-aside {
+		position: static;
+		order: -1;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid var(--ink);
 	}
 }
 
 @media (max-width: 800px) {
 	.hero,
-	.section-split,
-	.work-grid,
-	.blog-grid {
+	.section-split {
 		grid-template-columns: 1fr;
 	}
 
-	/* Reserved slot cells would leave a tall empty stack on one-column layouts. */
-	.work-card-slot {
-		display: none;
+	.blog-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	.hero-schematic,
-	.section-schematic {
+	.hero-portrait,
+	.section-schematic,
+	.section-photo {
 		justify-self: center;
 	}
 
@@ -953,5 +1110,12 @@ button.hero-jump {
 
 	.kind {
 		grid-column: 2;
+	}
+}
+
+@media (max-width: 600px) {
+	/* Two tiles per row stop being readable once the page measure drops below 600px. */
+	.blog-grid {
+		grid-template-columns: 1fr;
 	}
 }
